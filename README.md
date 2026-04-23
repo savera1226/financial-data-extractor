@@ -1,3 +1,4 @@
+
 <div align="center">
 
 # 📊 Financial Data Extractor
@@ -18,8 +19,8 @@
 
 <br/>
 
-<!-- 💡 Replace the line below with an actual screenshot or GIF of your running app -->
-<!-- Example: ![App Demo](assets/demo.gif) -->
+<!-- Add your app screenshot here after deploying -->
+<!-- Example: ![App Demo](assets/demo.png) -->
 
 </div>
 
@@ -27,9 +28,9 @@
 
 ## 🔍 What Is This?
 
-**Financial Data Extractor** is a production-ready AI application that automatically parses unstructured financial documents — earnings reports, press releases, news articles — and returns structured key metrics like **Revenue** and **EPS** with zero manual effort.
+**Financial Data Extractor** is a production-ready AI application that automatically parses unstructured financial documents — earnings reports, press releases, news articles — and returns four structured key metrics: **Revenue Actual, Revenue Expected, EPS Actual, and EPS Expected.**
 
-Built on **LangChain's LCEL pipeline** and powered by **Llama 3.3 70B via Groq's ultra-fast LPU™ inference**, this tool transforms the way investors, analysts, and fintech teams interact with financial data.
+Built on **LangChain's LCEL pipeline** and powered by **Llama 3.3 70B via Groq's ultra-fast LPU™ inference**, it transforms the way investors, analysts, and fintech teams interact with financial data.
 
 ---
 
@@ -39,10 +40,10 @@ Built on **LangChain's LCEL pipeline** and powered by **Llama 3.3 70B via Groq's
 |:---|:---|
 | ⚡ **Sub-Second Inference** | Groq LPU™ hardware delivers near-instant LLM responses |
 | 🧠 **Context-Aware Extraction** | Llama 3.3 70B understands financial meaning, not just keywords |
-| 📄 **Unstructured → Structured** | Converts raw text into clean Revenue & EPS JSON |
-| 🎨 **Custom Dark Mode UI** | Sleek Streamlit interface built for finance professionals |
+| 📊 **Beat / Miss Detection** | Returns both Actual and Expected figures for instant comparison |
+| 🎨 **Custom Dark Mode UI** | Sleek gradient Streamlit interface built for finance professionals |
 | 🔒 **Privacy by Design** | No data is stored — all extractions run fully in-memory |
-| 🔌 **Modular Architecture** | Clean separation of UI and AI logic for easy extension |
+| 🔌 **Modular Architecture** | Clean separation of UI (`main.py`) and AI logic (`data_extractor.py`) |
 
 ---
 
@@ -78,7 +79,8 @@ Built on **LangChain's LCEL pipeline** and powered by **Llama 3.3 70B via Groq's
 | **Language** | Python 3.10+ | Core runtime |
 | **AI Orchestration** | LangChain (LCEL) | Chain composition & prompt management |
 | **LLM** | Llama 3.3 70B via Groq | Financial entity extraction |
-| **Frontend** | Streamlit + Custom CSS | Interactive dark-mode UI |
+| **Frontend** | Streamlit + Custom CSS | Interactive dark-mode gradient UI |
+| **Data** | pandas | DataFrame construction and table display |
 | **Config** | python-dotenv | Secure local API key management |
 
 ---
@@ -105,7 +107,7 @@ Create a `.env` file in the root directory:
 ```plaintext
 GROQ_API_KEY=your_actual_groq_api_key_here
 ```
-> 🔐 The app loads this key via `load_dotenv()` at startup. Your key is **never hardcoded** and never leaves your machine during local development.
+> 🔐 `data_extractor.py` calls `load_dotenv()` at startup, so your key is loaded automatically. It is **never hardcoded** and never leaves your machine during local development.
 
 ### 4. Launch the App
 ```bash
@@ -120,16 +122,16 @@ The app will open at `http://localhost:8501` in your browser.
 ```text
 financial-data-extractor/
 │
-├── main.py               # Streamlit UI & custom dark-mode CSS
-├── data_extractor.py     # LangChain LCEL chain & Groq integration
-├── requirements.txt      # Pinned project dependencies
+├── main.py               # Streamlit UI, custom CSS, and table rendering
+├── data_extractor.py     # LangChain LCEL chain & Groq LLM integration
+├── requirements.txt      # Project dependencies
 ├── LICENSE               # MIT License
 ├── .env                  # API keys — local only, never commit this
 ├── .gitignore            # Excludes .env, __pycache__, .streamlit/
 └── README.md             # Project documentation
 ```
 
-### `.gitignore` (minimum recommended)
+### `.gitignore` (minimum required)
 ```gitignore
 .env
 __pycache__/
@@ -137,11 +139,12 @@ __pycache__/
 .streamlit/secrets.toml
 ```
 
-### `requirements.txt` (recommended pinned versions)
+### `requirements.txt`
 ```text
 streamlit>=1.35.0
-langchain>=0.2.0
+pandas>=2.0.0
 langchain-groq>=0.1.6
+langchain-core>=0.2.0
 python-dotenv>=1.0.0
 ```
 
@@ -149,15 +152,29 @@ python-dotenv>=1.0.0
 
 ## 💡 How It Works
 
-1. **Paste** any earnings article, press release, or financial snippet into the input box
-2. **Click "Extract"** — the LCEL chain sends your text through Llama 3.3 70B on Groq
-3. **Receive** a clean JSON object with Revenue and EPS — ready to copy, export, or pipe downstream
+1. **Paste** any earnings article, press release, or financial news snippet into the input box
+2. **Click "Extract Data ⚡"** — the LCEL chain sends your text to Llama 3.3 70B on Groq
+3. **Receive** a clean, formatted table showing Revenue and EPS — both Actual and Expected
 
+### Sample Output
+
+Given this input:
+> *"Apple reported Q1 2026 revenue of $124.3 billion, beating analyst estimates of $121.9 billion. EPS came in at $2.40, above the expected $2.28."*
+
+The app returns:
+
+| Measure | Estimated | Actual |
+|:---:|:---:|:---:|
+| Revenue | $121.9B | $124.3B |
+| EPS | $2.28 | $2.40 |
+
+### Raw JSON from `data_extractor.py`
 ```json
-// Sample Output
 {
-  "revenue": "$4.2B",
-  "eps": "$1.87"
+  "revenue_actual": "$124.3 billion",
+  "revenue_expected": "$121.9 billion",
+  "eps_actual": "$2.40",
+  "eps_expected": "$2.28"
 }
 ```
 
@@ -167,7 +184,7 @@ python-dotenv>=1.0.0
 
 This app is **Streamlit Cloud ready.** No Docker, no DevOps, no servers.
 
-1. Push your code to GitHub — confirm `.env` is **not** included
+1. Push your code to GitHub — confirm `.env` is **not** included (`git status` to verify)
 2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub
 3. Click **"New app"**, select your repo, and set `main.py` as the entry point
 4. Navigate to **Advanced Settings → Secrets** and add:
@@ -178,15 +195,15 @@ GROQ_API_KEY = "your_actual_groq_api_key_here"
 
 5. Click **Deploy** ✅
 
-> ⚠️ Do **not** upload your `.env` file to GitHub. The Streamlit Secrets panel is the safe, correct way to inject API keys in the cloud.
+> ⚠️ Never upload your `.env` file to GitHub. The Streamlit Secrets panel is the safe, correct way to inject API keys in the cloud.
 
 ---
 
 ## 🔒 Security
 
-- All text processing is **stateless** — no user input is logged or persisted
-- API keys are loaded via environment variables, never hardcoded in source
-- The app holds no database, session storage, or external logging service
+- All text processing is **stateless** — no user input is logged or persisted anywhere
+- API keys are loaded via `load_dotenv()` / environment variables, never hardcoded in source
+- The app holds no database, session storage, or external logging
 - Review [Groq's Privacy Policy](https://groq.com/privacy-policy/) for their inference data handling terms
 
 ---
@@ -196,10 +213,11 @@ GROQ_API_KEY = "your_actual_groq_api_key_here"
 | Problem | Fix |
 |:---|:---|
 | `AuthenticationError` on startup | Verify `GROQ_API_KEY` is set in `.env` (local) or Streamlit Secrets (cloud) |
-| `ModuleNotFoundError: langchain_groq` | Run `pip install langchain-groq` or reinstall from `requirements.txt` |
-| App shows a blank page | Ensure `data_extractor.py` calls `load_dotenv()` before any `os.getenv()` call |
-| Extraction returns `null` values | Input text may lack clear financial figures — try a real earnings press release |
-| Port already in use | Run `streamlit run main.py --server.port 8502` to use an alternate port |
+| `ModuleNotFoundError: langchain_groq` | Run `pip install langchain-groq langchain-core` |
+| `KeyError: revenue_actual` | The LLM returned unexpected JSON — try a more explicit earnings paragraph |
+| App shows blank page | Ensure `load_dotenv()` is called at the top of `data_extractor.py` before any `os.getenv()` |
+| Raw decimals instead of formatted values | Update the prompt to request `"human-readable strings like '$106.8B'"` |
+| Port already in use | Run `streamlit run main.py --server.port 8502` |
 
 ---
 
@@ -209,7 +227,7 @@ GROQ_API_KEY = "your_actual_groq_api_key_here"
 - [ ] **Multi-Model Support** — Switch between Llama, Mixtral, and Gemma on the fly
 - [ ] **Excel / CSV Export** — One-click download of extracted metrics
 - [ ] **Multilingual Support** — Extract from non-English financial filings
-- [ ] **Batch Processing** — Analyze multiple reports in a single session
+- [ ] **Batch Processing** — Analyze multiple reports in one session
 - [ ] **REST API Endpoint** — Trigger extractions programmatically via HTTP
 
 ---
@@ -218,9 +236,10 @@ GROQ_API_KEY = "your_actual_groq_api_key_here"
 
 ### Local — Before Pushing to GitHub
 - [x] `main.py`, `data_extractor.py`, and `requirements.txt` are present
-- [x] `data_extractor.py` calls `load_dotenv()` before accessing environment variables
-- [x] `.env` is listed in `.gitignore` and **not** staged for commit (`git status` to verify)
+- [x] `data_extractor.py` calls `load_dotenv()` before accessing `os.getenv()`
+- [x] `.env` is listed in `.gitignore` and not staged (`git status` shows it clean)
 - [x] App runs without errors via `streamlit run main.py`
+- [x] Extraction returns all 4 keys: `revenue_actual`, `revenue_expected`, `eps_actual`, `eps_expected`
 
 ### Cloud — On Streamlit Share
 - [ ] Repo is connected and `main.py` is set as the entry point
@@ -264,3 +283,4 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for full terms.
 [![Star this repo](https://img.shields.io/github/stars/savera1226/financial-data-extractor?style=social)](https://github.com/savera1226/financial-data-extractor)
 
 </div>
+
