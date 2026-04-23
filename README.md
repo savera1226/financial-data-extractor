@@ -150,6 +150,9 @@ python-dotenv>=1.0.0
 
 ---
 
+![App Screenshot](demo.png)
+<img width="939" height="788" alt="image" src="https://github.com/user-attachments/assets/f5fc3e3b-7252-4292-bf6e-fc212df2b9bc" />
+
 ## 💡 How It Works
 
 1. **Paste** any earnings article, press release, or financial news snippet into the input box
