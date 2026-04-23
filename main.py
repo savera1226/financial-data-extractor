@@ -75,6 +75,24 @@ st.markdown("""
         background-color: #1A1C23 !important;
         transition: 0.2s;
     }
+    /* Professional Insight Box */
+    .insight-box {
+        background-color: #1A1C23;
+        border-left: 5px solid #92FE9D; /* Mint Green accent */
+        padding: 20px;
+        border-radius: 10px;
+        color: #FFFFFF;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    .insight-title {
+        color: #00C9FF; /* Cyan title */
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -93,17 +111,28 @@ if st.button("Extract Data ⚡"):
             # Call the function
             extracted_data = extract(text_input)
 
-            # Map the JSON data
+            # Map the JSON data using .get() for safety in case a key is missing
             data = {
                 "Measure": ["Revenue", "EPS"],
-                "Estimated": [extracted_data['revenue_expected'], extracted_data['eps_expected']],
-                "Actual": [extracted_data['revenue_actual'], extracted_data['eps_actual']]
+                "Estimated": [extracted_data.get('revenue_expected', 'N/A'), extracted_data.get('eps_expected', 'N/A')],
+                "Actual": [extracted_data.get('revenue_actual', 'N/A'), extracted_data.get('eps_actual', 'N/A')]
             }
 
             df = pd.DataFrame(data)
 
             # Display the styled table
+            # Display the Styled Table
             st.markdown("### 📊 Extracted Metrics")
-            st.table(df)
-    else:
-        st.error("⚠️ Please paste a financial paragraph first to extract data.")
+            st.dataframe(df, use_container_width=True)
+
+            # NEW: Professional Bifurcation Display
+            bifurcation_insight = extracted_data.get('bifurcation', 'N/A')
+            if bifurcation_insight != 'N/A':
+                st.markdown("---")
+                # Using custom HTML for the "Stunning" look
+                st.markdown(f"""
+                                <div class="insight-box">
+                                    <div class="insight-title">🧩 Financial Bifurcation (Revenue Split)</div>
+                                    {bifurcation_insight}
+                                </div>
+                            """, unsafe_allow_html=True)
