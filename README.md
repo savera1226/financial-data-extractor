@@ -28,14 +28,14 @@
 
 ## 🔍 What Is This?
 
-**Financial Data Extractor** is a production-ready AI application that automatically parses unstructured financial documents — earnings reports, press releases, news articles — and returns four structured key metrics: **Revenue Actual, Revenue Expected, EPS Actual, and EPS Expected.**
+**Financial Data Extractor** is a production-ready AI application that automatically parses unstructured financial documents — earnings reports, press releases, news articles — and returns five structured key metrics: **Revenue Actual, Revenue Expected, EPS Actual, , EPS Expected and Financial Bifurcation (Revenue Split).**
 
 Built on **LangChain's LCEL pipeline** and powered by **Llama 3.3 70B via Groq's ultra-fast LPU™ inference**, it transforms the way investors, analysts, and fintech teams interact with financial data.
 
 ---
 
 ## ✨ Key Features
-
+| 🧩 **Financial Bifurcation** | Breaks down total revenue into specific segments (e.g., Cloud, Search, Ads) |
 | Feature | Description |
 |:---|:---|
 | ⚡ **Sub-Second Inference** | Groq LPU™ hardware delivers near-instant LLM responses |
@@ -78,9 +78,9 @@ Built on **LangChain's LCEL pipeline** and powered by **Llama 3.3 70B via Groq's
 |:---|:---|:---|
 | **Language** | Python 3.10+ | Core runtime |
 | **AI Orchestration** | LangChain (LCEL) | Chain composition & prompt management |
-| **LLM** | Llama 3.3 70B via Groq | Financial entity extraction |
+| **LLM** | Llama 3.3 70B via Groq | Financial entity extraction & revenue segment analysis |
 | **Frontend** | Streamlit + Custom CSS | Interactive dark-mode gradient UI |
-| **Data** | pandas | DataFrame construction and table display |
+| **Data** | pandas | DataFrame construction & bifurcation display logic |
 | **Config** | python-dotenv | Secure local API key management |
 
 ---
@@ -151,7 +151,8 @@ python-dotenv>=1.0.0
 ---
 
 ![App Screenshot](demo.png)
-<img width="939" height="788" alt="image" src="https://github.com/user-attachments/assets/f5fc3e3b-7252-4292-bf6e-fc212df2b9bc" />
+<img width="1012" height="821" alt="image" src="https://github.com/user-attachments/assets/b96c3707-ea73-4053-9cd4-578f70eceafd" />
+
 
 ## 💡 How It Works
 
@@ -161,23 +162,24 @@ python-dotenv>=1.0.0
 
 ### Sample Output
 
-Given this input:
-> *"Apple reported Q1 2026 revenue of $124.3 billion, beating analyst estimates of $121.9 billion. EPS came in at $2.40, above the expected $2.28."*
-
-The app returns:
+### Sample Output (Alphabet Q4 2025)
 
 | Measure | Estimated | Actual |
 |:---:|:---:|:---:|
-| Revenue | $121.9B | $124.3B |
-| EPS | $2.28 | $2.40 |
+| Revenue | $109.0B | $113.8B |
+| EPS | $2.64 | $2.82 |
+
+**Financial Bifurcation (Revenue Split):**
+> "Google Services ($95.9B), Google Search ($63.1B), YouTube Ads ($11.4B), Google Cloud ($17.7B)"
 
 ### Raw JSON from `data_extractor.py`
 ```json
 {
-  "revenue_actual": "$124.3 billion",
-  "revenue_expected": "$121.9 billion",
-  "eps_actual": "$2.40",
-  "eps_expected": "$2.28"
+  "revenue_actual": "$113.8 billion",
+  "revenue_expected": "$109.0 billion",
+  "eps_actual": "$2.82",
+  "eps_expected": "$2.64",
+  "bifurcation": "Google Services ($95.9B), Google Search ($63.1B), YouTube Ads ($11.4B), Google Cloud ($17.7B)"
 }
 ```
 
@@ -226,13 +228,11 @@ GROQ_API_KEY = "your_actual_groq_api_key_here"
 
 ## 🔭 Roadmap
 
-- [ ] **PDF Upload** — Drag-and-drop earnings PDFs for direct extraction
-- [ ] **Multi-Model Support** — Switch between Llama, Mixtral, and Gemma on the fly
-- [ ] **Excel / CSV Export** — One-click download of extracted metrics
-- [ ] **Multilingual Support** — Extract from non-English financial filings
-- [ ] **Batch Processing** — Analyze multiple reports in one session
-- [ ] **REST API Endpoint** — Trigger extractions programmatically via HTTP
-
+## 🔭 Roadmap
+- [x] **Financial Bifurcation** — Live! Split revenue by segments.
+- [ ] **Excel / CSV Export** — One-click download of extracted metrics.
+- [ ] **Multilingual Support** — Support for Hindi and Telugu financial news.
+- [ ] **PDF Upload** — Extract directly from uploaded earnings PDFs.
 ---
 
 ## ✅ Pre-Deployment Checklist
