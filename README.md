@@ -27,7 +27,7 @@
 
 ## 🔍 Overview
 
-**Financial Data Extractor** is a production-ready AI tool that converts **unstructured financial text and PDFs** into **structured, validated financial data**.
+**Financial Data Extractor** is a AI-powered financial information extraction application tool that converts **unstructured financial text and PDFs** into **structured, validated financial data**.
 
 It eliminates manual effort for analysts by extracting:
 
